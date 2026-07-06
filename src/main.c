@@ -9,7 +9,8 @@
  * 
  */
 
-uint8_t MEM_BUF[64 * 1024]; // 64KB
+// 2048 bytes of memory in a 8-bit system: 2048 words
+uint8_t MEM_BUF[2048]; // 2KB
 
 void mem_write(uint16_t addr, uint8_t data) {
     printf("writing address %x\n", addr);
@@ -23,7 +24,7 @@ uint8_t mem_read(uint16_t addr) {
 
 int main() {
     // writes a simple program
-    // based on Intel 8080 instruction set
+    // based on Intel 8080 ISA
     // see: https://en.wikipedia.org/wiki/Intel_8080
     const uint8_t program[] = {
         0x3E, 0x06, // MVI A, 06H
@@ -32,7 +33,7 @@ int main() {
         0x06, 0x0A, // MVI B, 10H
         0x80, // ADD B
         0x32, 0x00, 0x02, // STA 0200H
-        0x76, // HTL
+        0x76, // HLT
     };
     for (size_t i = 0; i < sizeof(program); i++) mem_write(i, program[i]);
 
@@ -62,7 +63,7 @@ int main() {
                 mem_write((uint16_t)((high << 8) | low), A_REG);
                 break;
             }
-            case 0x76: // HTL
+            case 0x76: // HLT
                 running = 0;
                 break;
         }
